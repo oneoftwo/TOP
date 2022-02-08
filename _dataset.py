@@ -11,7 +11,7 @@ from tqdm import tqdm
 import pickle
 from torch.nn import functional as F
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
-
+from copy import deepcopy
 
 class SmilesDataset(Dataset):
     """ 
@@ -21,7 +21,7 @@ class SmilesDataset(Dataset):
         c_to_i: character to index
     """
     def __init__(self, data_list, c_to_i):
-        self.c_to_i = c_to_i 
+        self.c_to_i = deepcopy(c_to_i)
         assert not 'Q' in self.c_to_i, 'Q (stop token) should not be in c_to_i'
         self.c_to_i['Q'] = len(c_to_i)
         self.data_list = data_list

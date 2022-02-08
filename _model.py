@@ -6,9 +6,9 @@ from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
 # langugate model autoencoder
 class SmilesClassifier(nn.Module):
     
-    def __init__(self, in_dim, hid_dim=3, n_layer=3, property_dim=20):
+    def __init__(self, in_dim, hid_dim=128, n_layer=3, property_dim=20):
         super().__init__()
-        self.n_layer = 3
+        self.n_layer = n_layer
         
         # embedding layer for sequence char
         self.embedding = nn.Linear(in_dim, hid_dim, bias=False)
