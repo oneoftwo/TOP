@@ -1,2 +1,7 @@
 # system files
 /__pycache__
+
+# data afiles 
+!/data/*
+/data/*.pkl 
+/data/tox21/*.pkl

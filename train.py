@@ -104,8 +104,8 @@ def generate_log(epoch, rd, marker):
     return output
 
 
-def train_model(model, train_loader, val_loader, n_epoch=1000, print_log=True, save_dir=None):
-    optimizer = optim.Adam(model.parameters(), lr=1e-5)
+def train_model(model, train_loader, val_loader, args, print_log=True, save_dir=None):
+    optimizer = optim.Adam(model.parameters(), args.lr)
     best_val_loss = 1e10
 
     if print_log:
@@ -115,7 +115,7 @@ def train_model(model, train_loader, val_loader, n_epoch=1000, print_log=True, s
         output += f'|{"accuray":^12}|{"precision":^12}|{"recall":^12}|{"auc_roc":^12}|{"auc_prc":^12}|'
         print(output)
 
-    for epoch in range(1, n_epoch+1):
+    for epoch in range(1, args.n_epoch+1):
         model, result_dict = run_single_epoch(model, train_loader, optimizer=optimizer)
         train_loss = result_dict['loss']
         model, result_dict = run_single_epoch(model, val_loader, optimizer=optimizer)
@@ -136,20 +136,22 @@ if __name__ == '__main__':
     import pickle
     from torch.utils.data import DataLoader
     import _model as MODEL
-    
-    print('train.py')
-    print()
+    import _argument as ARGUMENT
 
-    c_to_i_fn = './data/c_to_i.pkl'
+    print('\n...train.py...\n')
+    
+    args = ARGUMENT.get_train_args()
+
+    c_to_i_fn = args.c_to_i_fn
     c_to_i = pickle.load(open(c_to_i_fn, 'rb'))
     
-    train_data_list_fn = './data/tox21/tox21_NR-AR_train.pkl'
+    train_data_list_fn = args.train_data_fn
     train_data_list = pickle.load(open(train_data_list_fn, 'rb'))
     train_dataset = DATASET.SmilesDataset(train_data_list, c_to_i)
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, \
+    train_loader = DataLoader(train_dataset, batch_size=args.bs, shuffle=True, \
             collate_fn=DATASET.smiles_dataset_collate_fn, drop_last=False)
     
-    val_data_list_fn = './data/tox21/tox21_NR-AR_test.pkl'
+    val_data_list_fn = args.val_data_fn
     val_data_list = pickle.load(open(val_data_list_fn, 'rb'))
     val_dataset = DATASET.SmilesDataset(val_data_list, c_to_i)
     val_loader = DataLoader(val_dataset, batch_size=64, shuffle=True, \
@@ -163,9 +165,9 @@ if __name__ == '__main__':
     print()
     print(model)
     print()
-    print('start training')
+    print('...start training...')
     UTIL.set_cuda_visible_devices(1)
     print()
 
-    train_model(model, train_loader, val_loader, n_epoch=100)
+    train_model(model, train_loader, val_loader, args)
     
