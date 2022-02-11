@@ -21,6 +21,10 @@ def smiles_list_to_txt(fn, smiles_list):
     return None
 
 
+def count_parameters(model):
+    return sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+
 # get visible cuda device
 def set_cuda_visible_devices(ngpus):
     import subprocess

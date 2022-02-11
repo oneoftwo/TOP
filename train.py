@@ -130,6 +130,9 @@ def train_model(model, train_loader, val_loader, args, print_log=True, save_dir=
         
         if print_log:
             print(output)
+        
+        args.lr = args.lr * 0.99
+        optimizer = optim.Adam(model.parameters(), args.lr)
 
 
 if __name__ == '__main__':
@@ -141,6 +144,8 @@ if __name__ == '__main__':
     print('\n...train.py...\n')
     
     args = ARGUMENT.get_train_args()
+
+    print(args)
 
     c_to_i_fn = args.c_to_i_fn
     c_to_i = pickle.load(open(c_to_i_fn, 'rb'))
@@ -160,10 +165,11 @@ if __name__ == '__main__':
     print(f'train dataset: {len(train_dataset)}')
     print(f'val dataset: {len(val_dataset)}')
 
-    model = MODEL.SmilesClassifier(in_dim=len(c_to_i)+1)
+    model = MODEL.SmilesClassifier(in_dim=len(c_to_i)+1, hid_dim=96, n_layer=2)
     
     print()
     print(model)
+    print('model capacity:', UTIL.count_parameters(model))
     print()
     print('...start training...')
     UTIL.set_cuda_visible_devices(1)

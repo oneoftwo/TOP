@@ -31,13 +31,14 @@ def slide_string(smiles, n_hop):
 
 def main():
     total_smiles_list = []
-    for fn in sys.argv[1:]:
+    c_to_i_fn = sys.argv[1]
+    for fn in sys.argv[2:]:
         data_list = pickle.load(open(fn, 'rb'))
         total_smiles_list += [x['smiles'] for x in data_list]
     c_to_i = get_c_to_i(total_smiles_list, n_hop=1)
     print(c_to_i)
     print(len(c_to_i))
-    pickle.dump(c_to_i, open('./c_to_i.pkl', 'wb'))
+    pickle.dump(c_to_i, open(c_to_i_fn, 'wb'))
 
 if __name__ == '__main__':
     main()
