@@ -52,8 +52,8 @@ class SmilesClassifier(nn.Module):
         
         s = self.embedding(s) # s[b l hid_dim]
         
-        packed_seq = pack_padded_sequence(s, l, \
-                batch_first=True, enforce_sorted=False)
+        packed_seq = pack_padded_sequence(s, l, batch_first=True, \
+                enforce_sorted=False)
         output, h = self.gru(packed_seq)
         seq, l = pad_packed_sequence(output, batch_first=True)
         
